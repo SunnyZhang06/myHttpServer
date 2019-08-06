@@ -3,8 +3,6 @@
 
 #include <sys/epoll.h>
 
-#include "utility.h"
-
 using namespace std;
 
 #define MAX_EVENT 1024  //epoll_events的最大个数
