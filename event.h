@@ -37,8 +37,8 @@ private:
 	int epfd;       //Epoll的fd
 	int listenfd;  //监听的fd
 	int port;      //端口
-	struct epoll_event events[MAX_EVENT];	
-}
+	struct epoll_event ev[MAX_EVENT];	
+};
 
 
 
