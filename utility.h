@@ -14,6 +14,15 @@
 
 using namespace std;
 
+//将fd设置称非阻塞
+void setnonblocking(int fd)
+{
+	int old_option = fcntl(fd,F_GETFL);
+	int new_option = old_option | O_NONBLOCK;
+	fcntl(fd,F_SETFL,new_option);
+}
+
+
 
 
 #endif
