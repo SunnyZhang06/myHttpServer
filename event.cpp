@@ -44,7 +44,7 @@ void CEvent::handle_accept(int epfd,int listenfd)
 	int client_fd;
 	struct sockaddr_in client_addr;
 	socklen_t cliaddrlen;
-	client_fd = accept(listenfd,(struct sockaddr*)&client_addr,sizeof(cliaddrlen));
+	client_fd = accept(listenfd,(struct sockaddr*)&client_addr,&cliaddrlen);
 	if(client_fd<0)
 	{
 		perror("accept error");
