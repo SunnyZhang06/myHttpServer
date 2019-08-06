@@ -1,7 +1,4 @@
-#include "utility.h"
 #include "event.h"
-
-#define LISTEN_MAX 100
 
 int main()
 {

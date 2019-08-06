@@ -1,7 +1,4 @@
-#include "utility.h"
 #include "event.h"
-
-
 
 void CEvent::init()
 {

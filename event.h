@@ -1,15 +1,16 @@
 #ifndef _EVENT_H_
 #define _EVENT_H_
 
-#include "utility.h"
-
 #include <sys/epoll.h>
+
+#include "utility.h"
 
 using namespace std;
 
 #define MAX_EVENT 1024  //epoll_events的最大个数
 #define MAX_BUFFER 2048 //buffer的最大字节
 #define EPOLL_CREATE 1024
+#define LISTEN_MAX 1024
 
 enum EventType
 {
@@ -26,7 +27,7 @@ class CEvent
 {
 public:
 	CEvent(int m_port):port(m_port){}
-	~CEvent();
+	~CEvent(){}
 	void init();                  //服务器初始化(建立套接字、绑定、监听)
 	void add_fd(int epfd,int fd);
 	void handle_accept(int epfd,int listenfd);
