@@ -30,7 +30,7 @@ public:
 	void init();                  //服务器初始化(建立套接字、绑定、监听)
 	void add_fd(int epfd,int fd);
 	void handle_accept(int epfd,int listenfd);
-	void handle_request(int fd); //处理请求
+	void handle_request(int epfd,int fd); //处理请求
 	void do_epoll();             //epoll监听  
 	
 private:

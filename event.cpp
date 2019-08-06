@@ -57,27 +57,25 @@ void CEvent::handle_accept(int epfd,int listenfd)
 	add_fd(epfd,client_fd);
 }
 
-
-
-void CEvent::handle_request(int fd)
+void CEvent::handle_request(int epfd,int fd)
 {
-	char buffer[1024];
+	char buffer[1024*1024];
 	int nread = read(fd,buffer,sizeof(buffer));
 	printf("读到的请求是%s\n",buffer);
-	
-	char filename[10]={0};
+ 
+	char filename[10] = {0};
 	sscanf(buffer,"GET /%s",filename);
 	printf("解析的文件名是：%s\n",filename);
-	
-	char* mine = NULL;         //解析的类型
-	if(strstr(filename,".HTML"))
-		mine = "text/html";
-	if(strstr(filename,"."))
-		mine = "image/jpg";
+ 
+	char* mime = NULL;
+	if(strstr(filename,".html"))
+		mime = "text/html";
+	else if(strstr(filename,".jpg"))
+		mime = "image/jpg";
 	
 	//响应报文段
 	char response[1024*1024];
-	sprintf(response,"HTTP/1.1 200 OK\r\nContext-Type: %s\r\n\r\n",mine);
+	sprintf(response,"HTTP/1.1 200 OK\r\nContext-Type: %s\r\n\r\n",mime);
 	int headlen = strlen(response);
 	
 	//打开客户请求的文件并写进响应报文中
@@ -86,12 +84,17 @@ void CEvent::handle_request(int fd)
 	
 	//把响应报文段发送给客户端
 	write(fd,response,headlen+filelen);
-	close(filefd);
+	epoll_ctl(epfd,EPOLL_CTL_DEL,fd,NULL);
+	close(fd);
+	close(filefd); 
 }
+ 
+
+
+
 
 void CEvent::do_epoll()
 {
-	struct epoll_event ev[1000];
 	epfd = epoll_create(EPOLL_CREATE);
 	add_fd(epfd,listenfd);
 	while(1)
