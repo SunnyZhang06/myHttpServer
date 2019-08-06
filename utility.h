@@ -12,6 +12,8 @@
 #include <string.h>
 #include <errno.h>
 
+
+
 using namespace std;
 
 //将fd设置称非阻塞
