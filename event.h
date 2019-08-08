@@ -39,7 +39,7 @@ private:
 	int listenfd;        // 监听的fd	
 	struct epoll_event ev[MAX_EVENT];	
 	
-	CThreadPoolProxy *pool; // 服务器初始化的时候启动线程池(在哪里delete?) 
+	CThreadPoolProxy *pool_proxy; // 服务器初始化的时候启动线程池(在哪里delete?) 
 };
 
 #endif

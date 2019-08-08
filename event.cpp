@@ -43,7 +43,7 @@ void CEvent::init()
 	}	
 	//return listenfd;
 	
-	pool = CThreadPoolProxy::instance();//初始化线程池CThreadPoolProxy *pool;
+	pool_proxy = CThreadPoolProxy::instance();//初始化线程池CThreadPoolProxy *pool;
 }
 
 
@@ -128,7 +128,7 @@ void CEvent::do_epoll()
 			else if(ev[i].events & EPOLLIN)//有数据写入
 			{
 				CTask *task = new CTask(fd,epfd);//该fd在处理完一次请求后关闭
-				pool->add_task(task);            //添加到任务队列中
+				pool_proxy->add_task(task);            //添加到任务队列中
 				//printf("add a task, %d\n",fd);
 			}
 			else if(ev[i].events & EPOLLOUT)
