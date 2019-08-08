@@ -31,7 +31,7 @@ private:
 public:
 	CTask(){}
 	CTask(int fd,int epoll_fd):accept_fd(fd),epfd(epoll_fd){}
-	~CTask();
+	~CTask(){}
 	
 	void doit();//执行任务
 	
