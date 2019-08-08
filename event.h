@@ -1,7 +1,7 @@
 #ifndef _EVENT_H_
 #define _EVENT_H_
 
-#include "threadpool"
+#include "threadpool.h"
 #include <sys/epoll.h>
 
 using namespace std;
@@ -39,7 +39,7 @@ private:
 	int listenfd;        // 监听的fd	
 	struct epoll_event ev[MAX_EVENT];	
 	
-	CThreadPoolProxy *pool; // 服务器初始化的时候启动线程池(析构函数中释放) 
+	CThreadPoolProxy *pool; // 服务器初始化的时候启动线程池(在哪里delete?) 
 };
 
 #endif

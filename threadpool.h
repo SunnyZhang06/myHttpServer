@@ -27,7 +27,7 @@ private:
 	static bool is_stop;               // 线程退出标志    
 	
 	mutex_locker queue_mutex_locker;  // 互斥锁    
-    cond_locker queue_cond_locker;    // 条件变量
+    con_locker queue_cond_locker;    // 条件变量
   
 protected:  
     static void* process_task(void * arg);  // 新线程的线程回调函数
@@ -59,11 +59,11 @@ private:
 	CThreadPoolProxy()
 	{
 		m_pthreadpool = new CThreadPool(10);
-	}
+	};
 	~CThreadPoolProxy()
 	{
 		delete m_pthreadpool;
-	}
+	};
 	
 private:
 	CThreadPool* m_pthreadpool;
