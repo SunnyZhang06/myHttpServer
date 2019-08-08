@@ -41,7 +41,7 @@ public:
 	
 	//发送文件
 	int send_file(const string &filename,const char *type,int start,
-					const int num=200,const char *info = 'OK');
+					const int num=200,const char *info = "OK");
 					
 	int deal_get(const string &uri, int start=0); //处理GET请求
 	int deal_post(const string &uri,char *buf);   //处理POST请求
