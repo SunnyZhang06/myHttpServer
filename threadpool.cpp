@@ -72,8 +72,7 @@ void* CThreadPool::process_task(void* arg)//注意：静态函数只能调用静
 {
 	CThreadPool *pool = (CThreadPool*)arg;
 	pool->run();
-	return pool;
-	
+	return pool;	
 }
 
 void CThreadPool::run()

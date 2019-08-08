@@ -46,7 +46,7 @@ public:
 class CThreadPoolProxy: public CThreadPool
 {
 public:
-	static CThreadPool* instance()
+	static CThreadPoolProxy* instance()
 	{
 		static CThreadPoolProxy* m_pInstance = new CThreadPoolProxy();
 		return m_pInstance;	
@@ -60,11 +60,11 @@ private:
 	CThreadPoolProxy()
 	{
 		m_pthreadpool = new CThreadPool(10);
-	};
+	}
 	~CThreadPoolProxy()
 	{
 		delete m_pthreadpool;
-	};
+	}
 	
 private:
 	CThreadPool* m_pthreadpool;
