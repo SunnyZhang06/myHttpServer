@@ -5,7 +5,7 @@ LIBS := -lpthread -lstdc++
 TARGET := HttpServer
 
 SOURCES := $(wildcard *.cpp)
-OBJ := $(PATSUBST %.cpp, %.o, $(SOURCES))
+OBJ := $(patsubst %.cpp, %.o, $(SOURCES))
 # 把$(SOURCES)中变量后缀是cpp的全部替换成.o
 
 $(TARGET):$(OBJ)
