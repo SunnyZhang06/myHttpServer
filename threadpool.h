@@ -32,7 +32,8 @@ private:
 protected:  
     static void* process_task(void * arg);  // 新线程的线程回调函数
     void create_thread();                   // 创建线程池中的线程  
-	CTask *get_task();
+	CTask *get_task();                      //从任务队列中获取任务
+	void run();                             // 线程运行(取任务并处理任务)
   
 public:  
     CThreadPool(int thread_num = 10);  

@@ -70,7 +70,14 @@ CTask* CThreadPool::get_task()
 
 void* CThreadPool::process_task(void* arg)//注意：静态函数只能调用静态成员
 {
-	//CThreadPool *pool = (CThreadPool*)arg
+	CThreadPool *pool = (CThreadPool*)arg;
+	pool->run();
+	return pool;
+	
+}
+
+void CThreadPool::run()
+{
 	while(!is_stop)
 	{
 		CTask* task = get_task();		
@@ -80,7 +87,7 @@ void* CThreadPool::process_task(void* arg)//注意：静态函数只能调用静
 		}
 		else
 			task->doit();		     //处理任务
-		    //delete task;//task指向的对象在WebServer中new出来，因此需要手动delete
+		    delete task;//task指向的对象在WebServer中new出来，因此需要手动delete
 	}
 }
 
