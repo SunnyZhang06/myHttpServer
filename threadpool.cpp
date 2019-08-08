@@ -89,7 +89,7 @@ int CThreadPool::add_task(CTask *task)
     
 	// 如果添加任务之前队列为空，即所有线程都在wait，所以需要唤醒某个线程
     if( need_signal ) {
-        queue_cond_locker.signal();;；
+        queue_cond_locker.signal();
     }	
 	return 0;
 }
