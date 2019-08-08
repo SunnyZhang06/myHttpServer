@@ -1,16 +1,27 @@
-all:server
+CC := g++
+CXXFLAGS := -std=c++11 -g -Wall -D_REENTRANT
+INCLUDE := -I./
+LIBS := -lpthread -lstdc++ 
+TARGET := HttpServer
 
-server:main.o event.o
-	g++ main.o event.o -o server
+SOURCES := $(wildcard *.cpp)
+OBJ := $(PATSUBST %.cpp, %.o, $(SOURCES))
+# 把$(SOURCES)中变量后缀是cpp的全部替换成.o
 
-main.o:main.cpp
-	g++ -c main.cpp
+$(TARGET):$(OBJ)
+	$(CC) $(CXXFLAGS) $(OBJ) -o $(TARGET) $(LIBS)
 
-event.o:event.cpp
-	g++ -c event.cpp
-	
+# 所有.cpp文件生成.o文件,$@表示所有目标集 	
+%.o:%.cpp   
+	$(CC) -c $(CXXFLAGS) $(INCLUDE) $< -o $@ 
+
 .PHONY:clean
 
 clean:
-	rm -rf *o server
+	rm -rf $(OBJ) $(TARGET)
+
+	
+ 
+
+  
 

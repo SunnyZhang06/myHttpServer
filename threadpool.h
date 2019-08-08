@@ -1,7 +1,6 @@
 #ifndef _EVENT_H_
 #define _EVENT_H_
 
-#include "threadpool"
 #include <sys/epoll.h>
 
 using namespace std;
@@ -25,22 +24,22 @@ enum EventType
 class CEvent
 {
 public:
-	CEvent(int m_port);
-	~CEvent();
-	void init();                             // 服务器初始化(建立套接字、绑定、监听)
+	CEvent(int m_port):port(m_port){}
+	~CEvent(){}
+	void init();                  //服务器初始化(建立套接字、绑定、监听)
 	void add_fd(int epfd,int fd);
 	void handle_accept(int epfd,int listenfd);
-	void handle_request(int epfd,int fd);   // 处理请求
-	void do_epoll();                        // epoll监听  
+	void handle_request(int epfd,int fd); //处理请求
+	void do_epoll();             //epoll监听  
 	
 private:
-	int port;            // 端口
-	int epfd;            // Epoll的fd
-	int listenfd;        // 监听的fd	
+	int epfd;       //Epoll的fd
+	int listenfd;  //监听的fd
+	int port;      //端口
 	struct epoll_event ev[MAX_EVENT];	
-	
-	CThreadPoolProxy *pool; // 服务器初始化的时候启动线程池(析构函数中释放) 
 };
+
+
 
 #endif
 
