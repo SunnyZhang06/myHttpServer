@@ -68,8 +68,9 @@ CTask* CThreadPool::get_task()
     return task;
 }
 
-void* CThreadPool::process_task(void* arg)
+void* CThreadPool::process_task(void* arg)//注意：静态函数只能调用静态成员
 {
+	//CThreadPool *pool = (CThreadPool*)arg
 	while(!is_stop)
 	{
 		CTask* task = get_task();		
