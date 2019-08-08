@@ -1,4 +1,8 @@
+#include <iostream>
+
 #include "task.h"
+
+using namespace std;
 
 void CTask::removefd(int epfd,int fd)
 {
