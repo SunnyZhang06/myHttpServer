@@ -1,45 +1,75 @@
-#ifndef _EVENT_H_
-#define _EVENT_H_
+#ifndef _THREADPOOL_H_  
+#define _THREADPOOL_H_  
+ 
+/*********************
+** Filename: threadpool.h
+** Dsricbe: 线程池头文件
+** Date: 2019.08.06
+** @author: sunny
+***/
+  
+#include <deque>
+#include <string>  
+#include <pthread.h>  
 
-#include <sys/epoll.h>
+#include "locker.h"
+#include "task.h"
+  
+using namespace std;  
 
-using namespace std;
+/*线程池类的实现 */  
+class CThreadPool  
+{  
+private:  
+    queue<CTask*> task_queue;          // 任务队列  
+    bool is_stop;                      // 线程退出标志           
+    int  thread_num;                   // 线程池中启动的线程数
+    pthread_t   *m_threads;            // 描述线程池的数组
+	
+	mutex_locker queue_mutex_locker;  // 互斥锁    
+    cond_locker queue_cond_locker;    // 条件变量
+  
+protected:  
+    static void* process_task(void * arg);  // 新线程的线程回调函数
+    void create_thread();                   // 创建线程池中的线程  
+	CTask *get_task();
+  
+public:  
+    CThreadPool(int thread_num = 10);  
+	~CThreadPool();
+    int add_task(CTask *task);        // 把任务添加到任务队列中 
+    
+};  
 
-#define MAX_EVENT 1024  //epoll_events的最大个数
-#define MAX_BUFFER 2048 //buffer的最大字节
-#define EPOLL_CREATE 1024
-#define LISTEN_MAX 1024
-
-enum EventType
-{
-	EIN = EPOLLIN,		  // 读事件
-	EOUT = EPOLLOUT,	  // 写事件
-	ECLOSE = EPOLLRDHUP,  // 对端关闭连接或者写半部
-	EPRI = EPOLLPRI,	  // 紧急数据到达
-	EERR = EPOLLERR,	  // 错误事件
-	EET = EPOLLET, 		  // 边缘触发
-	EDEFULT = EIN | ECLOSE | EERR | EET
-};
-
-class CEvent
+// 代理类,只暴露给别人用的
+class CThreadPoolProxy: public CThreadPool
 {
 public:
-	CEvent(int m_port):port(m_port){}
-	~CEvent(){}
-	void init();                  //服务器初始化(建立套接字、绑定、监听)
-	void add_fd(int epfd,int fd);
-	void handle_accept(int epfd,int listenfd);
-	void handle_request(int epfd,int fd); //处理请求
-	void do_epoll();             //epoll监听  
+	static CThreadPool* instance()
+	{
+		static CThreadPoolProxy* m_pInstance = new CThreadPoolProxy();
+		return m_pInstance;	
+	}
+	int add_task(CTask *task)
+	{
+		return m_pthreadpool->add_task(task);
+	}
 	
 private:
-	int epfd;       //Epoll的fd
-	int listenfd;  //监听的fd
-	int port;      //端口
-	struct epoll_event ev[MAX_EVENT];	
+	CThreadPoolProxy()
+	{
+		m_pthreadpool = new CThreadPool(10);
+	}
+	~CThreadPoolProxy()
+	{
+		delete m_pthreadpool;
+	}
+	
+private:
+	CThreadPool* m_pthreadpool;
 };
+ 
+ 
+#endif  
 
-
-
-#endif
 

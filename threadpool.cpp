@@ -43,13 +43,12 @@ void CThreadPool::create_thread()
 		}
 
 		// 将线程进行脱离，线程运行完后自动回收，避免使用主线程进行join等待其结束
-        if( pthread_detach( threads[i] ) ) {
-            delete[] threads;
+        if( pthread_detach( m_threads[i] ) ) {
+            delete[] m_threads;
             cout << "pthread_detach error\n";
             throw exception();
         }
     }  
-    return 0;  
 }  
 
 CTask* CThreadPool::get_task()
@@ -90,7 +89,7 @@ int CThreadPool::add_task(CTask *task)
     
 	// 如果添加任务之前队列为空，即所有线程都在wait，所以需要唤醒某个线程
     if( need_signal ) {
-        queue_cond_locker.signal();
+        queue_cond_locker.signal();;；
     }	
 	return 0;
 }
