@@ -18,8 +18,6 @@
 #include <sys/wait.h>
 #include <errno.h>
 
-#include "threadpool.h"
-
 using namespace std;
 
 const int BUFFER_SIZE = 1024;

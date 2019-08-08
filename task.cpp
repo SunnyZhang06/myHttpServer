@@ -36,9 +36,9 @@ void CTask::doit()
             sscanf( tmp, "%d", &start );
         }
 		
-		if(!strcmp(method,'GET'))        //为GET
+		if(!strcmp(method,"GET"))        //为GET
 			deal_get(uri,start);
-		else if(!strcmp(method,'POST'))  //为POST
+		else if(!strcmp(method,"POST"))  //为POST
 			deal_post(uri,buf);
 		else
 		{
@@ -132,7 +132,7 @@ int CTask::send_file(const string & filename, const char *type,
 	{
 		off_t t = sum;
 
-        int r = sendfile( accp_fd, fd, &t, filestate.st_size );
+        int r = sendfile( accept_fd, fd, &t, filestate.st_size );
 
         if( r < 0 ) 
 		{
@@ -141,7 +141,7 @@ int CTask::send_file(const string & filename, const char *type,
             if( errno == EAGAIN ) 
 			{
                 printf("errno is EAGAIN\n");
-                // reset_oneshot( epoll_fd, accp_fd );
+                // reset_oneshot( epoll_fd, accept_fd );
                 continue;
 			} 
 			else {
