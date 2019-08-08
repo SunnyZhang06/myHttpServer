@@ -116,7 +116,7 @@ void CEvent::do_epoll()
 		int nready = epoll_wait(epfd,ev,MAX_EVENT,-1);
 		if( nready < 0 ) {
             perror( "epoll_wait error" );
-            return -1;
+            exit(1);
         }
 		for(int i=0;i<nready;++i)
 		{
@@ -139,6 +139,7 @@ void CEvent::do_epoll()
 	}
 	close(listenfd);//关闭listenfd和epfd
 	close(epfd);
+
 }
 
 
