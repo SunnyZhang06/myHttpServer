@@ -3,6 +3,7 @@
 
 #include <pthread.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <errno.h>
 
 /*封装互斥锁类*/
@@ -14,7 +15,7 @@ public:
 	{
 		if(pthread_mutex_init(&m_mutex,NULL)!=0)
 		{
-			perror("mutex init error!");
+			perror("mutex init error!\n");
 			exit(1);
 		}
 	}
@@ -49,11 +50,11 @@ public:
 	con_locker()
 	{
 		if(pthread_mutex_init(&m_mutex, NULL) != 0)
-			printf("mutex init error");
+			printf("mutex init error\n");
 		if(pthread_cond_init(&m_cond, NULL) != 0)
 		{   
 			pthread_mutex_destroy(&m_mutex);//释放已经初始化成功的mutex
-			printf("cond init error");
+			printf("cond init error\n");
 		}
 
 	}
@@ -75,11 +76,18 @@ public:
 		return ret==0;
 	}
 	
-	/*唤醒等待条件变量的线程*/
+	/*唤醒等待条件变量的某个线程*/
 	bool signal()  
     {
 		return pthread_cond_signal(&m_cond) == 0;
     }
+	
+	// 唤醒所有等待该条件变量的线程
+    bool broadcast() 
+	{
+        return pthread_cond_broadcast( &m_cond ) == 0;
+    }
+	
 private:
 	pthread_mutex_t m_mutex;
 	pthread_cond_t m_cond;
