@@ -9,7 +9,7 @@ CEvent::CEvent(int m_port):port(m_port)
 
 CEvent::~CEvent()
 {
-	delete pool;
+	//delete pool;在哪里释放？
 }
 
 void CEvent::init()
@@ -43,7 +43,7 @@ void CEvent::init()
 	}	
 	//return listenfd;
 	
-	pool = CThreadPoolProxy::instance();//初始化线程池
+	pool = CThreadPoolProxy::instance();//初始化线程池CThreadPoolProxy *pool;
 }
 
 
@@ -140,3 +140,12 @@ void CEvent::do_epoll()
 	close(listenfd);//关闭listenfd和epfd
 	close(epfd);
 }
+
+
+
+
+
+
+
+
+
