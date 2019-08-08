@@ -8,7 +8,7 @@
 ** @author: sunny
 ***/
   
-#include <deque>
+#include <queue>
 #include <string>  
 #include <pthread.h>  
 
@@ -22,9 +22,9 @@ class CThreadPool
 {  
 private:  
     queue<CTask*> task_queue;          // 任务队列  
-    bool is_stop;                      // 线程退出标志           
-    int  thread_num;                   // 线程池中启动的线程数
+	int  thread_num;                   // 线程池中启动的线程数          
     pthread_t   *m_threads;            // 描述线程池的数组
+	static bool is_stop;               // 线程退出标志    
 	
 	mutex_locker queue_mutex_locker;  // 互斥锁    
     cond_locker queue_cond_locker;    // 条件变量

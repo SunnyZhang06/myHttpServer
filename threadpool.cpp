@@ -1,18 +1,21 @@
 #include <stdio.h>
 #include <errno.h>
 #include <exception>
+#include <iostream>
 
 #include "threadpool.h"
 
 using namespace std;
 
+bool CThreadPool::is_stop = false;
+
 CThreadPool::CThreadPool(int m_thread_num):
-		thread_num(m_thread_num),is_stop(false),m_threads(NULL)
+		thread_num(m_thread_num),m_threads(NULL)
 {
 	if(thread_num<=0)
 		printf("threadpool can't init because thread_number = 0");
  
-    m_threads = new pthread_t[thread_number];
+    m_threads = new pthread_t[thread_num];
     if(m_threads == NULL)
     	printf("can't init threadpool because thread array can't new");
 	
