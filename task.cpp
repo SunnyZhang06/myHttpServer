@@ -10,46 +10,82 @@ void CTask::removefd(int epfd,int fd)
 	close(fd);
 }
 
+// void CTask::doit()
+// {
+	// char buf[BUFFER_SIZE] = {0};
+	
+	// /*从fd上循环读数据*/
+	// while(int ret = recv( accept_fd, buf, 1024, 0 ))
+	// {
+		// if(!ret)
+		// {
+			// cout<<"browser exit.\n"<<endl;
+			// break;
+		// }
+		// else if(ret<0)
+		// {
+			// continue;//如果接收出错则继续接收
+		// }
+		
+		// int start = 0;
+		// char method[5],uri[100],version[10];
+		// sscanf(buf,"%s %s %s",method,uri,version);
+		
+		// if( char *tmp = strstr( buf, "Range:" ) ) {
+            // tmp += 13;
+            // sscanf( tmp, "%d", &start );
+        // }
+		
+		// if(!strcmp(method,"GET"))        //为GET
+			// deal_get(uri,start);
+		// else if(!strcmp(method,"POST"))  //为POST
+			// deal_post(uri,buf);
+		// else
+		// {
+			// const char *header = "HTTP/1.1 501 Not Implemented\r\nContent-Type: text/plain;charset=utf-8\r\n\r\n";
+			// send(accept_fd,header,strlen(header),0);
+		// }
+		// break;  // 只要处理完就退出循环，避免浏览器一直处于pending状态
+	// }
+	// close( accept_fd );  // 任务完成直接close
+// }
+
 void CTask::doit()
 {
-	char buf[BUFFER_SIZE] = {0};
-	
-	/*从fd上循环读数据*/
-	while(int ret = recv( accept_fd, buf, 1024, 0 ))
-	{
-		if(!ret)
-		{
-			cout<<"browser exit.\n"<<endl;
-			break;
-		}
-		else if(ret<0)
-		{
-			continue;//如果接收出错则继续接收
-		}
-		
-		int start = 0;
-		char method[5],uri[100],version[10];
-		sscanf(buf,"%s %s %s",method,uri,version);
-		
-		if( char *tmp = strstr( buf, "Range:" ) ) {
-            tmp += 13;
-            sscanf( tmp, "%d", &start );
-        }
-		
-		if(!strcmp(method,"GET"))        //为GET
-			deal_get(uri,start);
-		else if(!strcmp(method,"POST"))  //为POST
-			deal_post(uri,buf);
-		else
-		{
-			const char *header = "HTTP/1.1 501 Not Implemented\r\nContent-Type: text/plain;charset=utf-8\r\n\r\n";
-			send(accept_fd,header,strlen(header),0);
-		}
-		break;  // 只要处理完就退出循环，避免浏览器一直处于pending状态
-	}
-	close( accept_fd );  // 任务完成直接close
+	handle_request(epfd,accept_fd);
 }
 
+void CTask::handle_request(int epfd,int fd)
+{
+	char buffer[1024*1024];
+	int nread = read(fd,buffer,sizeof(buffer));
+	printf("读到的请求是%s\n",buffer);
+ 
+	char filename[10] = {0};
+	sscanf(buffer,"GET /%s",filename);
+	printf("解析的文件名是：%s\n",filename);
+ 
+	char* mime = NULL;
+	if(strstr(filename,".html"))
+		mime = "text/html";
+	else if(strstr(filename,".jpg"))
+		mime = "image/jpg";
+	
+	//响应报文段
+	char response[1024*1024];
+	sprintf(response,"HTTP/1.1 200 OK\r\nContext-Type: %s\r\n\r\n",mime);
+	int headlen = strlen(response);
+	
+	//打开客户请求的文件并写进响应报文中
+	int filefd = open(filename,O_RDONLY);
+	int filelen = read(filefd,response+headlen,sizeof(response)-headlen);
+	
+	//把响应报文段发送给客户端
+	write(fd,response,headlen+filelen);
+	epoll_ctl(epfd,EPOLL_CTL_DEL,fd,NULL);
+	close(fd);
+	close(filefd); 
+}
 
 int CTask::deal_get(const string &uri,int start)
 {
@@ -119,7 +155,7 @@ int CTask::send_file(const string & filename, const char *type,
 	}
 	/*以上可参考：https://blog.csdn.net/acs713/article/details/8569962 */
 	
-	char header[200];
+	char header[1024];
 	sprintf(header, "HTTP/1.1 %d %s\r\nServer: niliushall\r\nContent-Length: %d\r\nContent-Type: %s;charset:utf-8\r\n\r\n", num, info, int(filestate.st_size - start), type );
 	
 	// send第二个参数只能是c类型字符串，不能使用string
@@ -156,6 +192,7 @@ int CTask::send_file(const string & filename, const char *type,
 		}            
 	}
 	close(fd);
+	close(accept_fd);
 	
 	return 0;
 }

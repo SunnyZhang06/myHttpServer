@@ -37,6 +37,7 @@ public:
 	
 	void removefd(int epfd,int fd);
 	
+	void handle_request(int epfd,int fd);   // 处理请求
 	//发送文件
 	int send_file(const string &filename,const char *type,int start,
 					const int num=200,const char *info = "OK");
