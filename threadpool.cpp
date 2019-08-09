@@ -85,8 +85,12 @@ void CThreadPool::run()
 			queue_cond_locker.wait();//队列为空则线程等待
 		}
 		else
+		{
+			cout<<task_queue.size()<<endl;
 			task->doit();		     //处理任务
-		    delete task;//task指向的对象在WebServer中new出来，因此需要手动delete
+		    delete task;//task指向的对象在WebServer中new出来，因此需要手动delete		
+		}
+
 	}
 }
 
