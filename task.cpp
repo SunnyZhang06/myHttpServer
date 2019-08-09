@@ -10,50 +10,50 @@ void CTask::removefd(int epfd,int fd)
 	close(fd);
 }
 
-// void CTask::doit()
-// {
-	// char buf[BUFFER_SIZE] = {0};
-	
-	// /*从fd上循环读数据*/
-	// while(int ret = recv( accept_fd, buf, 1024, 0 ))
-	// {
-		// if(!ret)
-		// {
-			// cout<<"browser exit.\n"<<endl;
-			// break;
-		// }
-		// else if(ret<0)
-		// {
-			// continue;//如果接收出错则继续接收
-		// }
-		
-		// int start = 0;
-		// char method[5],uri[100],version[10];
-		// sscanf(buf,"%s %s %s",method,uri,version);
-		
-		// if( char *tmp = strstr( buf, "Range:" ) ) {
-            // tmp += 13;
-            // sscanf( tmp, "%d", &start );
-        // }
-		
-		// if(!strcmp(method,"GET"))        //为GET
-			// deal_get(uri,start);
-		// else if(!strcmp(method,"POST"))  //为POST
-			// deal_post(uri,buf);
-		// else
-		// {
-			// const char *header = "HTTP/1.1 501 Not Implemented\r\nContent-Type: text/plain;charset=utf-8\r\n\r\n";
-			// send(accept_fd,header,strlen(header),0);
-		// }
-		// break;  // 只要处理完就退出循环，避免浏览器一直处于pending状态
-	// }
-	// close( accept_fd );  // 任务完成直接close
-// }
-
 void CTask::doit()
 {
-	handle_request(epfd,accept_fd);
+	char buf[BUFFER_SIZE] = {0};
+	
+	/*从fd上循环读数据*/
+	while(int ret = recv( accept_fd, buf, 1024, 0 ))
+	{
+		if(!ret)
+		{
+			cout<<"browser exit.\n"<<endl;
+			break;
+		}
+		else if(ret<0)
+		{
+			continue;//如果接收出错则继续接收
+		}
+		
+		int start = 0;
+		char method[5],uri[100],version[10];
+		sscanf(buf,"%s %s %s",method,uri,version);
+		
+		if( char *tmp = strstr( buf, "Range:" ) ) {
+            tmp += 13;
+            sscanf( tmp, "%d", &start );
+        }
+		
+		if(!strcmp(method,"GET"))        //为GET
+			deal_get(uri,start);
+		else if(!strcmp(method,"POST"))  //为POST
+			deal_post(uri,buf);
+		else
+		{
+			const char *header = "HTTP/1.1 501 Not Implemented\r\nContent-Type: text/plain;charset=utf-8\r\n\r\n";
+			send(accept_fd,header,strlen(header),0);
+		}
+		break;  // 只要处理完就退出循环，避免浏览器一直处于pending状态
+	}
+	close( accept_fd );  // 任务完成直接close
 }
+
+// void CTask::doit()
+// {
+	// handle_request(epfd,accept_fd);
+// }
 
 void CTask::handle_request(int epfd,int fd)
 {
